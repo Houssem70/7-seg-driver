@@ -49,44 +49,40 @@ static int __init sevseg_init(void)
     return_val = cdev_add(&chr_dev, dev_number, 1);
 
     if(return_val != 0)
-    {   
-        unregister_chrdev_region(dev_number, 1);
+    {           
         printk(KERN_ERR "%s: Failed to add 7-segment device\n", __func__);
-        return -1;
+        goto DEV_REGISTER_ERR;
     }
     
     sevseg_class = class_create(THIS_MODULE, "sevseg_class");
      
     if(sevseg_class == NULL)
     {
-        class_destroy(sevseg_class);
-        cdev_del(&chr_dev);
-        unregister_chrdev_region(dev_number, 1);
         printk(KERN_ERR "%s: Failed to create 7-segment class\n", __func__);
-        return -1;
+        goto CLASS_CREATE_ERR;
     }
 
     sevseg_device = device_create(sevseg_class, NULL, dev_number, NULL, "sevseg_device");
 
     if(sevseg_device == NULL)
     {
-        device_destroy(sevseg_class, dev_number);
-        class_destroy(sevseg_class);
-        cdev_del(&chr_dev);
-        unregister_chrdev_region(dev_number, 1);
         printk(KERN_ERR "%s: Failed to create 7-segment class\n", __func__);
-        return -1;
+        goto DEV_CREATE_ERR;
     }
 
     printk(KERN_INFO "7-segment driver loaded.\n");
     printk(KERN_INFO "Device created successfully.\n");
 
-DEV_REGISTER_ERROR:
+    return 0;
+
+DEV_CREATE_ERR:
+    class_destroy(sevseg_class);
+CLASS_CREATE_ERR:
+    cdev_del(&chr_dev);
+DEV_REGISTER_ERR:
     unregister_chrdev_region(dev_number, 1);
-    printk(KERN_ERR "%s: Failed to add 7-segment device\n", __func__);
     return -1;
 
-    return 0;
 }
 
 static void __exit sevseg_exit(void)
