@@ -1,7 +1,8 @@
-obj-m := sevseg.o
+obj-m := sevenseg.o
+KDIR = /lib/modules/$(shell uname -r)/build
 
 all:
-	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
 clean:
-	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	$(MAKE) -C $(KDIR) M=$(PWD) clean
