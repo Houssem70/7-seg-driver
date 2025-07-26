@@ -1,0 +1,24 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2837";
+
+    fragment@0 {
+        target = <&gpio>;
+        __overlay__ {
+            seg7: seg7 {
+                compatible = "rpi,seg7";
+                gpios = <&gpio 4  0
+                         &gpio 5  0
+                         &gpio 6  0
+                         &gpio 7  0
+                         &gpio 8  0
+                         &gpio 9  0
+                         &gpio 10 0
+                         &gpio 11 0>;
+                status = "okay";
+            };
+        };
+    };
+};

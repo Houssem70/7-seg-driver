@@ -9,3 +9,4 @@ modules.order
 .vscode/
 *.swp
 *.cmd
+*.dtbo
