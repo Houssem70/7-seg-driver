@@ -23,13 +23,13 @@ sudo reboot
 make
 ```
 
-After compilation, you can insert the module using:
+After compilation, insert the module:
 
 ```bash
 sudo insmod seg7.ko
 ```
 
-And remove it using:
+To remove the module:
 
 ```bash
 sudo rmmod seg7
@@ -41,8 +41,43 @@ Check the kernel logs for output:
 dmesg | tail
 ```
 
+## 🚀 Usage
+
+### Character Device Interface
+
+- **Device node**: `/dev/sevenseg`  
+- **Write** a digit (0–9) to update the display:
+  ```bash
+  echo 5 > /dev/sevenseg
+  ```
+- **Read** the current digit:
+  ```bash
+  cat /dev/sevenseg
+  ```
+- Ensure permissions allow access or use `sudo`.
+
+### Sysfs Interface
+
+A sysfs attribute is created under the device's sysfs directory:
+
+```
+/sys/class/sevenseg/sevenseg/value
+```
+
+- **Write** to sysfs to change the displayed digit:
+  ```bash
+  echo 3 > /sys/class/sevenseg/sevenseg/value
+  ```
+- **Read** the current digit from sysfs:
+  ```bash
+  cat /sys/class/sevenseg/sevenseg/value
+  ```
+
 ## 📌 Notes
 
 - The `seg7` overlay configures GPIOs 4 to 11 to control segments A–G and the decimal point.
-- This module uses the character device interface (`cdev`) for interaction from user space.
-- Make sure your Raspberry Pi GPIO pins are not used by other overlays or services (like SPI, I2C) that could conflict.
+- This module uses:
+  - A character device (`/dev/sevenseg`) for simple read/write operations.
+  - A sysfs attribute (`value`) under `/sys/class/sevenseg/sevenseg/`.
+- Make sure GPIO pins 4–11 are not used by other overlays or services (like SPI, I2C) that could conflict.
+- The driver automatically discovers GPIOs via the Device Tree node `compatible = "rpi,seg7"`.
