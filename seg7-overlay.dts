@@ -9,6 +9,7 @@
         __overlay__ {
             seg7: seg7 {
                 compatible = "rpi,seg7";
+                label = "sevenseg";
                 gpios = <&gpio 4  0
                          &gpio 5  0
                          &gpio 6  0
