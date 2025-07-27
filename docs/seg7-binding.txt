@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: GPL-2.0
+title: Seven‑Segment Display Platform Driver
+maintainer: Houssem Eddine Marzouk <houssemmarzouk8@gmail.com>
+
+driver:
+  file: seg7_platform.c
+  compatible: "rpi,seg7"
+
+properties:
+  compatible:
+    required: true
+    type: string
+    description: |
+      Must be "rpi,seg7" so the platform driver in `seg7_platform.c`
+      will bind to this node.
+
+  gpios:
+    required: true
+    type: phandle-array
+    cells: 2  # <gpio-controller, pin, flags>
+    description: |
+      Exactly eight entries, one per segment (A, B, C, D, E, F, G, DP):
+        &gpio X 0
+
+  label:
+    required: false
+    type: string
+    description: |
+      Human-readable name for the display.  Shows up under /sys/class.
+
+example: |
+  /dts-v1/;
+  /plugin/;
+
+  &gpio {
+      seg7: seg7 {
+          compatible = "rpi,seg7";
+          label      = "sevenseg";
+          gpios = <&gpio 4 0   /* A */,
+                   &gpio 5 0   /* B */,
+                   &gpio 6 0   /* C */,
+                   &gpio 7 0   /* D */,
+                   &gpio 8 0   /* E */,
+                   &gpio 9 0   /* F */,
+                   &gpio 10 0  /* G */,
+                   &gpio 11 0>;/* DP */;
+          status = "okay";
+      };
+  };

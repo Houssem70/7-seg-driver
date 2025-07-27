@@ -1,4 +1,4 @@
-obj-m := sevenseg.o
+obj-m := seg7_platform.o
 KDIR = /lib/modules/$(shell uname -r)/build
 
 all:
