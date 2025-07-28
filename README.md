@@ -31,7 +31,7 @@ After reboot, the kernel will automatically bind your driver to the `rpi,seg7` n
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/Houssem70/7-seg-driver](https://github.com/Houssem70/7-seg-driver).git
+git clone https://github.com/Houssem70/7-seg-driver.git
 cd 7-seg-driver
 ```
 
