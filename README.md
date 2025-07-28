@@ -5,40 +5,23 @@ This is a Linux kernel *platform driver* for controlling a common-cathode 7-segm
 ✅ **Tested on:**  
 - **Raspberry Pi 3 Model B**  
 - **Raspbian OS (32-bit, based on Debian)**  
-- **Kernel version:** 6.8.0-64-generic
+- **Kernel version: 6.8.0-64-generic**
 
 ## 🛠️ Device Tree Overlay: Build & Deploy
 
-Create the overlay source at `seg7-overlay.dts`:
-
-```dts
-/dts-v1/;
-/plugin/;
-
-&gpio {
-    seg7: seg7 {
-        compatible = "rpi,seg7";
-        label      = "sevenseg";
-        gpios = <&gpio 4 0   /* A */,
-                 &gpio 5 0   /* B */,
-                 &gpio 6 0   /* C */,
-                 &gpio 7 0   /* D */,
-                 &gpio 8 0   /* E */,
-                 &gpio 9 0   /* F */,
-                 &gpio 10 0  /* G */,
-                 &gpio 11 0>;/* DP */;
-        status = "okay";
-    };
-};
-```
-
-Compile & install the overlay:
+You should already have `seg7-overlay.dts` in the project root. To compile and install it:
 
 ```bash
-cd overlays
+# Compile the overlay
 dtc -@ -I dts -O dtb -o seg7.dtbo seg7-overlay.dts
+
+# Copy into Raspberry Pi overlays directory
 sudo cp seg7.dtbo /boot/overlays/
+
+# Enable on next boot
 echo "dtoverlay=seg7" | sudo tee -a /boot/config.txt
+
+# Reboot to apply
 sudo reboot
 ```
 
@@ -47,8 +30,32 @@ After reboot, the kernel will automatically bind your driver to the `rpi,seg7` n
 ## 🔧 Build the Kernel Module
 
 ```bash
+# 1. Clone the repository
+git clone [https://github.com/Houssem70/7-seg-driver](https://github.com/Houssem70/7-seg-driver).git
+cd 7-seg-driver
+```
+
+### On the Raspberry Pi
+
+If you compile **on** your Raspberry Pi, simply run:
+
+```bash
 make
 ```
+
+This will use the native GCC located in `/usr/bin`.
+
+### Cross‑compiling from x86 → ARM
+
+If you’re on a desktop and want to build for the Pi’s ARM core, invoke:
+
+```bash
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+```
+
+- `ARCH=arm` tells the kernel build system you’re targeting ARM.  
+- `CROSS_COMPILE=arm-linux-gnueabihf-` prefixes compiler/linker commands 
+  (e.g. `$(CROSS_COMPILE)gcc` → `arm-linux-gnueabihf-gcc`).
 
 After compilation, insert the module:
 
@@ -119,3 +126,5 @@ See [docs/seg7-binding.txt](docs/seg7-binding.txt) for the full binding specific
 - The platform driver binds via `compatible = "rpi,seg7"`.
 - GPIOs 4–11 control segments A–G and the decimal point.
 - Ensure no conflicting overlays (SPI, I2C, etc.) use these pins.
+
+## Enjoy your blinking digits!
