@@ -268,7 +268,7 @@ static struct platform_driver seg7_driver = {
     .remove = seg7_remove,
     .driver = {
         .name           = "seg7",
-        .of_match_table = seg7_of_match,
+        .of_match_table = of_match_ptr(seg7_of_match),
     },
 };
 
